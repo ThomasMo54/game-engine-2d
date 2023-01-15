@@ -1,5 +1,7 @@
 package com.motompro.gameengine2d.display;
 
+import com.motompro.gameengine2d.manager.InputManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -12,6 +14,7 @@ public class Display {
 
     private final JFrame frame;
     private final Canvas canvas;
+    private final InputManager inputManager;
 
     private boolean closed = false;
 
@@ -22,6 +25,10 @@ public class Display {
         frame.setLocationRelativeTo(null);
         this.canvas = new Canvas();
         frame.setContentPane(canvas.getPanel());
+        this.inputManager = new InputManager();
+        frame.addKeyListener(inputManager);
+        frame.addMouseListener(inputManager);
+        frame.addMouseMotionListener(inputManager);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -31,6 +38,11 @@ public class Display {
                 closed = true;
             }
         });
+    }
+
+    public void close() {
+        frame.dispose();
+        closed = true;
     }
 
     public void show() {
@@ -51,5 +63,9 @@ public class Display {
 
     public Canvas getCanvas() {
         return canvas;
+    }
+
+    public InputManager getInputManager() {
+        return inputManager;
     }
 }
