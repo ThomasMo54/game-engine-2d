@@ -1,6 +1,7 @@
 package com.motompro.gameengine2d.display;
 
 import com.motompro.gameengine2d.manager.InputManager;
+import com.motompro.gameengine2d.maths.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,12 +54,38 @@ public class Display {
         frame.setVisible(true);
     }
 
+    public boolean isClosed() {
+        return closed;
+    }
+
     public boolean isVisible() {
         return frame.isVisible();
     }
 
-    public boolean isClosed() {
-        return closed;
+    public String getTitle() {
+        return frame.getTitle();
+    }
+
+    public void setTitle(String title) {
+        frame.setTitle(title);
+    }
+
+    public Vector2 getSize() {
+        Dimension size = frame.getSize();
+        return new Vector2(size.getWidth(), size.getHeight());
+    }
+
+    public void setSize(Vector2 size) {
+        frame.setSize((int) size.getX(), (int) size.getY());
+    }
+
+    public Vector2 getLocation() {
+        Point location = frame.getLocation();
+        return new Vector2(location.getX(), location.getY());
+    }
+
+    public void setLocation(Vector2 location) {
+        frame.setLocation((int) location.getX(), (int) location.getY());
     }
 
     public Canvas getCanvas() {
