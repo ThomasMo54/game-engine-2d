@@ -82,10 +82,18 @@ public class Vector2 {
         return x * vector.getX() + y * vector.getY();
     }
 
+    /**
+     * @param vector The other vector
+     * @return The angle between two vectors (in radians)
+     */
     public double angle(Vector2 vector) {
         return Math.acos(dot(vector) / (length() * vector.length())) % Math.PI;
     }
 
+    /**
+     * Make a full copy of this vector.
+     * @return The copy
+     */
     public Vector2 copy() {
         return new Vector2(x, y);
     }
@@ -95,10 +103,16 @@ public class Vector2 {
         return "(" + x + ", " + y + ")";
     }
 
+    /**
+     * @return A new vector
+     */
     public static Vector2 of(double x, double y) {
         return new Vector2(x, y);
     }
 
+    /**
+     * @return A new null vector (x = 0, y = 0)
+     */
     public static Vector2 zero() {
         return new Vector2(0, 0);
     }
