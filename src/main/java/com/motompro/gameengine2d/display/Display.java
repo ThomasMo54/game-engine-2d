@@ -1,20 +1,22 @@
 package com.motompro.gameengine2d.display;
 
 import com.motompro.gameengine2d.manager.InputManager;
-import com.motompro.gameengine2d.maths.Vector2;
+import com.motompro.gameengine2d.math.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.function.Consumer;
 
 public class Display {
 
     private static final String DEFAULT_TITLE = "Display";
     private static final Dimension DEFAULT_DIMENSION = new Dimension(1280, 720);
+    private static final Color DEFAULT_BACKGROUND = Color.BLACK;
 
     private final JFrame frame;
-    private final Canvas canvas;
+    private final DisplayPanel panel;
     private final InputManager inputManager;
 
     private boolean closed = false;
@@ -24,8 +26,9 @@ public class Display {
         frame.setTitle(DEFAULT_TITLE);
         frame.setSize(DEFAULT_DIMENSION);
         frame.setLocationRelativeTo(null);
-        this.canvas = new Canvas();
-        frame.setContentPane(canvas.getPanel());
+        this.panel = new DisplayPanel();
+        panel.setBackground(DEFAULT_BACKGROUND);
+        frame.setContentPane(panel);
         this.inputManager = new InputManager();
         frame.addKeyListener(inputManager);
         frame.addMouseListener(inputManager);
@@ -39,6 +42,13 @@ public class Display {
                 closed = true;
             }
         });
+    }
+
+    public void render(Consumer<Canvas> consumer) {
+        panel.setGraphicsConsumer(consumer);
+        panel.repaint();
+        if(frame.isVisible())
+            frame.setVisible(true);
     }
 
     public void close() {
@@ -88,11 +98,41 @@ public class Display {
         frame.setLocation((int) location.getX(), (int) location.getY());
     }
 
-    public Canvas getCanvas() {
-        return canvas;
+    public Color getBackground() {
+        return panel.getBackground();
+    }
+
+    public void setBackground(Color background) {
+        panel.setBackground(background);
     }
 
     public InputManager getInputManager() {
         return inputManager;
     }
+}
+
+class DisplayPanel extends JPanel {
+
+    private final Canvas canvas = new Canvas();
+    private Consumer<Canvas> graphicsConsumer = g -> {};
+
+    protected void setGraphicsConsumer(Consumer<Canvas> consumer) {
+        this.graphicsConsumer = consumer;
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        canvas.setGraphics((Graphics2D) g);
+        graphicsConsumer.accept(canvas);
+    }
+
+    @Override
+    public void paintComponents(Graphics g) {}
+
+    @Override
+    protected void paintChildren(Graphics g) {}
+
+    @Override
+    protected void paintBorder(Graphics g) {}
 }

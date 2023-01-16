@@ -1,6 +1,6 @@
 package com.motompro.gameengine2d.manager;
 
-import com.motompro.gameengine2d.maths.Vector2;
+import com.motompro.gameengine2d.math.Vector2;
 
 import java.awt.event.*;
 import java.util.HashSet;

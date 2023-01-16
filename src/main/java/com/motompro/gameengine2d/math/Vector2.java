@@ -1,4 +1,4 @@
-package com.motompro.gameengine2d.maths;
+package com.motompro.gameengine2d.math;
 
 public class Vector2 {
 
@@ -87,6 +87,10 @@ public class Vector2 {
     }
 
     public Vector2 copy() {
+        return new Vector2(x, y);
+    }
+
+    public static Vector2 of(double x, double y) {
         return new Vector2(x, y);
     }
 }

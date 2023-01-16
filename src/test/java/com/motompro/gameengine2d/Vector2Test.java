@@ -2,7 +2,7 @@ package com.motompro.gameengine2d;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.motompro.gameengine2d.maths.Vector2;
+import com.motompro.gameengine2d.math.Vector2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
