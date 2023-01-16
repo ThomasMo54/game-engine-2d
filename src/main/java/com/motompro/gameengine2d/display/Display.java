@@ -20,6 +20,8 @@ public class Display {
     private final InputManager inputManager;
 
     private boolean closed = false;
+    private boolean fullscreen = false;
+    private Dimension lastSize = DEFAULT_DIMENSION;
 
     public Display() {
         this.frame = new JFrame();
@@ -87,6 +89,26 @@ public class Display {
 
     public void setSize(Vector2 size) {
         frame.setSize((int) size.getX(), (int) size.getY());
+    }
+
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+
+    public void setFullscreen(boolean fullscreen) {
+        this.fullscreen = fullscreen;
+        frame.dispose();
+        frame.setUndecorated(fullscreen);
+        frame.setResizable(!fullscreen);
+        if(fullscreen) {
+            lastSize = frame.getSize();
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        } else {
+            frame.setExtendedState(JFrame.NORMAL);
+            frame.setSize(lastSize);
+            frame.setLocationRelativeTo(null);
+        }
+        frame.setVisible(true);
     }
 
     public Vector2 getLocation() {

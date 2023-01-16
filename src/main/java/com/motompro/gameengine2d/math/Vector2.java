@@ -98,4 +98,8 @@ public class Vector2 {
     public static Vector2 of(double x, double y) {
         return new Vector2(x, y);
     }
+
+    public static Vector2 zero() {
+        return new Vector2(0, 0);
+    }
 }

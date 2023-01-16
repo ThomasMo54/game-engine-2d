@@ -7,7 +7,8 @@ public abstract class Game {
     private static final double DEFAULT_FRAME_RATE = 240;
 
     private boolean running = false;
-    private double frameRate = DEFAULT_FRAME_RATE;
+    private double frameRateLimit = DEFAULT_FRAME_RATE;
+    private double currentFrameRate = 0;
 
     private void doGameLoop() {
         long lastTick = System.nanoTime();
@@ -15,11 +16,12 @@ public abstract class Game {
 
         while(running) {
             deltaTime = (System.nanoTime() - lastTick) / SECOND_IN_NANO;
+            currentFrameRate = 1 / deltaTime;
             update(deltaTime);
             render();
             lastTick = System.nanoTime();
             try {
-                Thread.sleep((long) (((SECOND_IN_NANO / frameRate) - deltaTime) / MILLISECOND_IN_NANO));
+                Thread.sleep((long) (((SECOND_IN_NANO / frameRateLimit) - deltaTime) / MILLISECOND_IN_NANO));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -40,11 +42,15 @@ public abstract class Game {
     }
 
     public void setFrameRateLimit(double framesPerSecond) {
-        this.frameRate = framesPerSecond;
+        this.frameRateLimit = Math.max(1, framesPerSecond);
     }
 
     public double getFrameRateLimit() {
-        return frameRate;
+        return frameRateLimit;
+    }
+
+    public double getCurrentFrameRate() {
+        return currentFrameRate;
     }
 
     public abstract void update(double deltaTime);
