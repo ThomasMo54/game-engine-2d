@@ -10,7 +10,7 @@ public abstract class Game {
     private double frameRate = DEFAULT_FRAME_RATE;
 
     private void doGameLoop() {
-        long lastTick = 0;
+        long lastTick = System.nanoTime();
         double deltaTime;
 
         while(running) {

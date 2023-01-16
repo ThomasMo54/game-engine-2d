@@ -90,6 +90,11 @@ public class Vector2 {
         return new Vector2(x, y);
     }
 
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
+
     public static Vector2 of(double x, double y) {
         return new Vector2(x, y);
     }
