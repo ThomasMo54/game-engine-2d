@@ -54,4 +54,9 @@ public class TransformComponent extends Component {
     public List<Class<? extends Component>> getComponentRequirements() {
         return List.of();
     }
+
+    @Override
+    public boolean isUnique() {
+        return true;
+    }
 }

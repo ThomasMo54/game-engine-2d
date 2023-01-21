@@ -32,4 +32,10 @@ public abstract class Component {
      * @return The {@link List} of required components
      */
     public abstract List<Class<? extends Component>> getComponentRequirements();
+
+    /**
+     * Get if the component must be unique on a game object.
+     * @return A boolean
+     */
+    public abstract boolean isUnique();
 }
