@@ -30,7 +30,7 @@ public class GameObject {
     }
 
     public void removeComponent(Class<? extends Component> componentClass) {
-        components.removeIf(component -> component.getClass().equals(componentClass));
+        components.removeIf(component -> component.getClass().equals(componentClass) || component.getComponentRequirements().contains(componentClass));
     }
 
     public void addComponent(Component component) {

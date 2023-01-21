@@ -2,6 +2,8 @@ package com.motompro.gameengine2d.math;
 
 public class Vector2 {
 
+    private static final double EPS = 0.00000001;
+
     private double x, y;
 
     public Vector2(double x, double y) {
@@ -15,6 +17,14 @@ public class Vector2 {
 
     public double getY() {
         return y;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 
     public Vector2 set(double x, double y) {
@@ -53,6 +63,12 @@ public class Vector2 {
         return this.multiply(vector.getX(), vector.getY());
     }
 
+    public Vector2 multiply(double v) {
+        this.x *= v;
+        this.y *= v;
+        return this;
+    }
+
     public Vector2 divide(double x, double y) {
         this.x /= x;
         this.y /= y;
@@ -61,6 +77,12 @@ public class Vector2 {
 
     public Vector2 divide(Vector2 vector) {
         return this.divide(vector.getX(), vector.getY());
+    }
+
+    public Vector2 divide(double v) {
+        this.x /= v;
+        this.y /= v;
+        return this;
     }
 
     public double lengthSquared() {
@@ -78,6 +100,19 @@ public class Vector2 {
         return this;
     }
 
+    /**
+     * Make this vector rotate by the given angle (counterclockwise).
+     * @param angle An angle in radians
+     * @return This {@link Vector2} after the rotation
+     */
+    public Vector2 rotate(double angle) {
+        double newX = x * Math.cos(angle) - y * Math.sin(angle);
+        double newY = x * Math.sin(angle) + y * Math.cos(angle);
+        this.x = newX;
+        this.y = newY;
+        return this;
+    }
+
     public double dot(Vector2 vector) {
         return x * vector.getX() + y * vector.getY();
     }
@@ -91,6 +126,24 @@ public class Vector2 {
     }
 
     /**
+     * @param vector The other point
+     * @return The squared distance separating the two points of coordinates described by this vector and the other.
+     */
+    public double distanceSquared(Vector2 vector) {
+        double dx = vector.getX() - x;
+        double dy = vector.getY() - y;
+        return dx * dx + dy * dy;
+    }
+
+    /**
+     * @param vector The other point
+     * @return The distance separating the two points of coordinates described by this vector and the other.
+     */
+    public double distance(Vector2 vector) {
+        return Math.sqrt(distanceSquared(vector));
+    }
+
+    /**
      * Make a full copy of this vector.
      * @return The copy
      */
@@ -101,6 +154,14 @@ public class Vector2 {
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Vector2 other))
+            return false;
+        return other.getX() >= x - EPS && other.getX() <= x + EPS &&
+                other.getY() >= y - EPS && other.getY() <= y + EPS;
     }
 
     /**

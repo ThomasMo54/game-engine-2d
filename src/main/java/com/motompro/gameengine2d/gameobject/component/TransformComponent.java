@@ -15,6 +15,8 @@ public class TransformComponent extends Component {
     }
 
     public void setPosition(Vector2 position) {
+        if(position == null)
+            throw new IllegalArgumentException("position can't be null");;
         this.position = position;
     }
 
@@ -27,6 +29,8 @@ public class TransformComponent extends Component {
     }
 
     public void setSize(Vector2 size) {
+        if(size == null)
+            throw new IllegalArgumentException("size can't be null");
         this.size = size;
     }
 

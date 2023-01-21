@@ -1,12 +1,13 @@
-package com.motompro.gameengine2d;
+package com.motompro.gameengine2d.math;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.motompro.gameengine2d.math.Vector2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class Vector2Test {
+
+    private static final double EPS = 0.00000001;
 
     @Test
     @DisplayName("Vector addition")
@@ -93,5 +94,24 @@ public class Vector2Test {
         second = new Vector2(-1, 0);
 
         assertEquals(0, first.angle(second));
+    }
+
+    @Test
+    @DisplayName("Vector distance")
+    void testDistance() {
+        Vector2 first = new Vector2(1, 0);
+        Vector2 second = new Vector2(-1, 0);
+
+        assertEquals(2, first.distance(second));
+    }
+
+    @Test
+    @DisplayName("Vector rotation")
+    void testRotate() {
+        Vector2 vector = new Vector2(1, 0);
+        vector.rotate(Math.PI);
+
+        assertTrue(vector.getX() >= -1 - EPS && vector.getX() <= -1 + EPS);
+        assertTrue(vector.getY() >= -EPS && vector.getY() <= EPS);
     }
 }
