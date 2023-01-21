@@ -1,10 +1,14 @@
 package com.motompro.gameengine2d.display;
 
+import com.motompro.gameengine2d.gameobject.Camera;
+import com.motompro.gameengine2d.gameobject.component.TransformComponent;
 import com.motompro.gameengine2d.manager.InputManager;
 import com.motompro.gameengine2d.math.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
@@ -12,7 +16,7 @@ import java.util.function.Consumer;
 public class Display {
 
     private static final String DEFAULT_TITLE = "Display";
-    private static final Dimension DEFAULT_DIMENSION = new Dimension(1280, 720);
+    public static final Dimension DEFAULT_DIMENSION = new Dimension(1280, 720);
     private static final Color DEFAULT_BACKGROUND = Color.BLACK;
 
     private final JFrame frame;
@@ -22,15 +26,17 @@ public class Display {
     private boolean closed = false;
     private boolean fullscreen = false;
     private Dimension lastSize = DEFAULT_DIMENSION;
+    private Camera camera;
 
     public Display() {
         this.frame = new JFrame();
         frame.setTitle(DEFAULT_TITLE);
         frame.setSize(DEFAULT_DIMENSION);
         frame.setLocationRelativeTo(null);
-        this.panel = new DisplayPanel();
+        this.panel = new DisplayPanel(this);
         panel.setBackground(DEFAULT_BACKGROUND);
         frame.setContentPane(panel);
+        this.camera = new Camera(Vector2.of(DEFAULT_DIMENSION.getWidth(), DEFAULT_DIMENSION.getHeight()));
         this.inputManager = new InputManager();
         frame.addKeyListener(inputManager);
         frame.addMouseListener(inputManager);
@@ -42,6 +48,14 @@ public class Display {
                 super.windowClosing(e);
                 e.getWindow().dispose();
                 closed = true;
+            }
+        });
+
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+
             }
         });
     }
@@ -79,6 +93,8 @@ public class Display {
     }
 
     public void setTitle(String title) {
+        if(title == null)
+            throw new IllegalArgumentException("title can't be null");
         frame.setTitle(title);
     }
 
@@ -88,6 +104,8 @@ public class Display {
     }
 
     public void setSize(Vector2 size) {
+        if(size == null)
+            throw new IllegalArgumentException("size can't be null");
         frame.setSize((int) size.getX(), (int) size.getY());
     }
 
@@ -117,6 +135,8 @@ public class Display {
     }
 
     public void setLocation(Vector2 location) {
+        if(location == null)
+            throw new IllegalArgumentException("location can't be null");
         frame.setLocation((int) location.getX(), (int) location.getY());
     }
 
@@ -125,7 +145,19 @@ public class Display {
     }
 
     public void setBackground(Color background) {
+        if(background == null)
+            throw new IllegalArgumentException("background can't be null");
         panel.setBackground(background);
+    }
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(Camera camera) {
+        if(camera == null)
+            throw new IllegalArgumentException("camera can't be null");
+        this.camera = camera;
     }
 
     public InputManager getInputManager() {
@@ -135,8 +167,13 @@ public class Display {
 
 class DisplayPanel extends JPanel {
 
+    private final Display display;
     private final Canvas canvas = new Canvas();
     private Consumer<Canvas> graphicsConsumer = g -> {};
+
+    protected DisplayPanel(Display display) {
+        this.display = display;
+    }
 
     protected void setGraphicsConsumer(Consumer<Canvas> consumer) {
         this.graphicsConsumer = consumer;
@@ -145,7 +182,12 @@ class DisplayPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        canvas.setGraphics((Graphics2D) g);
+        Graphics2D graphics2D = (Graphics2D) g;
+        Vector2 cameraPosition = display.getCamera().getComponent(TransformComponent.class).getPosition();
+        Vector2 viewportSize = display.getCamera().getViewportSize();
+        graphics2D.translate(-cameraPosition.getX(), -cameraPosition.getY());
+        graphics2D.scale(display.getSize().getX() / viewportSize.getX(), display.getSize().getY() / viewportSize.getY());
+        canvas.setGraphics(graphics2D);
         graphicsConsumer.accept(canvas);
     }
 

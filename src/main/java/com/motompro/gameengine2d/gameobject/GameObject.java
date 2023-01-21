@@ -38,6 +38,8 @@ public class GameObject {
     }
 
     public void addComponent(Component component) {
+        if(component == null)
+            throw new IllegalArgumentException("component can't be null");
         if(component.isUnique() && hasComponent(component.getClass()))
             throw new UniqueComponentException("This component type is already added to this game object");
         Optional<Class<? extends Component>> missingComponent = component.getComponentRequirements().stream().filter(clazz -> !hasComponent(clazz)).findFirst();
