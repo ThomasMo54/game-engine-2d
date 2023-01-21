@@ -7,8 +7,6 @@ import com.motompro.gameengine2d.math.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
@@ -16,10 +14,11 @@ import java.util.function.Consumer;
 public class Display {
 
     private static final String DEFAULT_TITLE = "Display";
-    public static final Dimension DEFAULT_DIMENSION = new Dimension(1280, 720);
+    private static final Dimension DEFAULT_DIMENSION = new Dimension(1280, 720);
     private static final Color DEFAULT_BACKGROUND = Color.BLACK;
 
     private final JFrame frame;
+    private final Insets insets;
     private final DisplayPanel panel;
     private final InputManager inputManager;
 
@@ -30,8 +29,10 @@ public class Display {
 
     public Display() {
         this.frame = new JFrame();
+        frame.pack();
+        this.insets = frame.getInsets();
         frame.setTitle(DEFAULT_TITLE);
-        frame.setSize(DEFAULT_DIMENSION);
+        frame.setSize(new Dimension((int) (DEFAULT_DIMENSION.getWidth() + insets.left + insets.right), (int) (DEFAULT_DIMENSION.getHeight() + insets.top + insets.bottom)));
         frame.setLocationRelativeTo(null);
         this.panel = new DisplayPanel(this);
         panel.setBackground(DEFAULT_BACKGROUND);
@@ -48,14 +49,6 @@ public class Display {
                 super.windowClosing(e);
                 e.getWindow().dispose();
                 closed = true;
-            }
-        });
-
-        frame.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                super.componentResized(e);
-
             }
         });
     }
@@ -106,7 +99,7 @@ public class Display {
     public void setSize(Vector2 size) {
         if(size == null)
             throw new IllegalArgumentException("size can't be null");
-        frame.setSize((int) size.getX(), (int) size.getY());
+        frame.setSize((int) size.getX() + insets.left + insets.right, (int) size.getY() + insets.top + insets.bottom);
     }
 
     public boolean isFullscreen() {
@@ -150,6 +143,10 @@ public class Display {
         panel.setBackground(background);
     }
 
+    public Insets getInsets() {
+        return insets;
+    }
+
     public Camera getCamera() {
         return camera;
     }
@@ -183,10 +180,13 @@ class DisplayPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D graphics2D = (Graphics2D) g;
-        Vector2 cameraPosition = display.getCamera().getComponent(TransformComponent.class).getPosition();
+        TransformComponent cameraTransform = display.getCamera().getComponent(TransformComponent.class);
+        Vector2 cameraPosition = cameraTransform.getPosition();
         Vector2 viewportSize = display.getCamera().getViewportSize();
-        graphics2D.translate(-cameraPosition.getX(), -cameraPosition.getY());
-        graphics2D.scale(display.getSize().getX() / viewportSize.getX(), display.getSize().getY() / viewportSize.getY());
+        Vector2 scaleRatio = display.getSize().copy().divide(viewportSize);
+        graphics2D.translate(-cameraPosition.getX() + viewportSize.getX() / 2 * scaleRatio.getX() - display.getInsets().left, -cameraPosition.getY() + viewportSize.getY() / 2 * scaleRatio.getY() - display.getInsets().top);
+        graphics2D.rotate(cameraTransform.getRotation());
+        graphics2D.scale(scaleRatio.getX(), scaleRatio.getY());
         canvas.setGraphics(graphics2D);
         graphicsConsumer.accept(canvas);
     }
