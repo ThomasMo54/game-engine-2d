@@ -1,5 +1,7 @@
 package com.motompro.gameengine2d;
 
+import com.motompro.gameengine2d.manager.task.TaskManager;
+
 /**
  * This class represents the main class of a game app. It handles the game loop and frame rate tricks.
  */
@@ -9,6 +11,7 @@ public abstract class Game {
     private static final double MILLISECOND_IN_NANO = 1000000;
     private static final double DEFAULT_FRAME_RATE = 240;
 
+    private final TaskManager taskManager = new TaskManager();
     private boolean running = false;
     private double frameRateLimit = DEFAULT_FRAME_RATE;
     private double currentFrameRate = 0;
@@ -21,6 +24,7 @@ public abstract class Game {
             deltaTime = (System.nanoTime() - lastTick) / SECOND_IN_NANO;
             currentFrameRate = 1 / deltaTime;
             update(deltaTime);
+            taskManager.update();
             render();
             lastTick = System.nanoTime();
             try {
@@ -75,6 +79,13 @@ public abstract class Game {
      */
     public double getCurrentFrameRate() {
         return currentFrameRate;
+    }
+
+    /**
+     * @return The task manager. It allows to schedule tasks.
+     */
+    public TaskManager getTaskManager() {
+        return taskManager;
     }
 
     /**
