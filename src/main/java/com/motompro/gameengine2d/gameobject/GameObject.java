@@ -49,4 +49,11 @@ public class GameObject {
         componentsClass.add(component.getClass());
         component.setGameObject(this);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof GameObject other))
+            return false;
+        return id.equals(other.getId());
+    }
 }

@@ -32,7 +32,7 @@ public class Display {
         frame.pack();
         this.insets = frame.getInsets();
         frame.setTitle(DEFAULT_TITLE);
-        frame.setSize(new Dimension((int) (DEFAULT_DIMENSION.getWidth() + insets.left + insets.right), (int) (DEFAULT_DIMENSION.getHeight() + insets.top + insets.bottom)));
+        frame.setSize(new Dimension((int) DEFAULT_DIMENSION.getWidth(), (int) (DEFAULT_DIMENSION.getHeight() + insets.top)));
         frame.setLocationRelativeTo(null);
         this.panel = new DisplayPanel(this);
         panel.setBackground(DEFAULT_BACKGROUND);
@@ -40,8 +40,8 @@ public class Display {
         this.camera = new Camera(Vector2.of(DEFAULT_DIMENSION.getWidth(), DEFAULT_DIMENSION.getHeight()));
         this.inputManager = new InputManager();
         frame.addKeyListener(inputManager);
-        frame.addMouseListener(inputManager);
-        frame.addMouseMotionListener(inputManager);
+        panel.addMouseListener(inputManager);
+        panel.addMouseMotionListener(inputManager);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -67,6 +67,7 @@ public class Display {
 
     public void show() {
         frame.setVisible(true);
+        camera.setViewportSize(getCanvasSize());
     }
 
     public void hide() {
@@ -99,7 +100,12 @@ public class Display {
     public void setSize(Vector2 size) {
         if(size == null)
             throw new IllegalArgumentException("size can't be null");
-        frame.setSize((int) size.getX() + insets.left + insets.right, (int) size.getY() + insets.top + insets.bottom);
+        frame.setSize((int) size.getX(), (int) size.getY() + insets.top);
+    }
+
+    public Vector2 getCanvasSize() {
+        Dimension size = panel.getSize();
+        return new Vector2(size.getWidth(), size.getHeight());
     }
 
     public boolean isFullscreen() {
@@ -183,8 +189,8 @@ class DisplayPanel extends JPanel {
         TransformComponent cameraTransform = display.getCamera().getComponent(TransformComponent.class);
         Vector2 cameraPosition = cameraTransform.getPosition();
         Vector2 viewportSize = display.getCamera().getViewportSize();
-        Vector2 scaleRatio = display.getSize().copy().divide(viewportSize);
-        graphics2D.translate(-cameraPosition.getX() + viewportSize.getX() / 2 * scaleRatio.getX() - display.getInsets().left, -cameraPosition.getY() + viewportSize.getY() / 2 * scaleRatio.getY() - display.getInsets().top);
+        Vector2 scaleRatio = display.getCanvasSize().copy().divide(viewportSize);
+        graphics2D.translate(-cameraPosition.getX() + viewportSize.getX() / 2 * scaleRatio.getX(), -cameraPosition.getY() + viewportSize.getY() / 2 * scaleRatio.getY());
         graphics2D.rotate(cameraTransform.getRotation());
         graphics2D.scale(scaleRatio.getX(), scaleRatio.getY());
         canvas.setGraphics(graphics2D);

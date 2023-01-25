@@ -35,12 +35,21 @@ public class Camera extends GameObject {
     }
 
     /**
+     * Scale the viewport size by the given ratio. Zoom in when ratio < 1 and zoom out when ratio > 1.
+     * @param ratio The zoom ratio
+     */
+    public void zoom(double ratio) {
+        viewportSize.multiply(ratio);
+    }
+
+    /**
      * Convert a position on the screen to the corresponding absolute position in the world.
      * @param screenPosition The screen position
      * @return A {@link Vector2} corresponding to the converted position
      */
-    public Vector2 getScreenToWorldPosition(Vector2 screenPosition) {
-        return transformComponent.getPosition().copy().add(screenPosition);
+    public Vector2 getScreenToWorldPosition(Vector2 screenPosition, Vector2 screenSize) {
+        Vector2 viewportScreenRatio = viewportSize.copy().divide(screenSize);
+        return transformComponent.getPosition().copy().add(screenPosition).multiply(viewportScreenRatio).subtract(viewportSize.copy().divide(2));
     }
 
     /**
@@ -48,8 +57,9 @@ public class Camera extends GameObject {
      * @param worldPosition The screen position
      * @return A {@link Vector2} corresponding to the converted position
      */
-    public Vector2 getWorldToScreenPosition(Vector2 worldPosition) {
-        return worldPosition.copy().subtract(transformComponent.getPosition());
+    public Vector2 getWorldToScreenPosition(Vector2 worldPosition, Vector2 screenSize) {
+        Vector2 viewportScreenRatio = viewportSize.copy().divide(screenSize);
+        return worldPosition.copy().add(viewportSize.copy().divide(2)).divide(viewportScreenRatio).subtract(transformComponent.getPosition());
     }
 
     @Override

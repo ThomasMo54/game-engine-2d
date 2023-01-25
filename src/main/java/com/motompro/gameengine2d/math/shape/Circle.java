@@ -1,4 +1,4 @@
-package com.motompro.gameengine2d.util.shape;
+package com.motompro.gameengine2d.math.shape;
 
 public class Circle extends Shape {
 

@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.motompro.gameengine2d.gameobject.GameObject;
 import com.motompro.gameengine2d.math.Vector2;
-import com.motompro.gameengine2d.util.shape.Circle;
-import com.motompro.gameengine2d.util.shape.Rectangle;
+import com.motompro.gameengine2d.math.shape.Circle;
+import com.motompro.gameengine2d.math.shape.Rectangle;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

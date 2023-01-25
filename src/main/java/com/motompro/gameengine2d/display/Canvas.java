@@ -1,7 +1,7 @@
 package com.motompro.gameengine2d.display;
 
 import com.motompro.gameengine2d.math.Vector2;
-import com.motompro.gameengine2d.util.shape.Polygon;
+import com.motompro.gameengine2d.math.shape.Polygon;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

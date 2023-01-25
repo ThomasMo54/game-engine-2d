@@ -2,9 +2,9 @@ package com.motompro.gameengine2d.gameobject.component;
 
 import com.motompro.gameengine2d.gameobject.GameObject;
 import com.motompro.gameengine2d.math.Vector2;
-import com.motompro.gameengine2d.util.shape.Circle;
-import com.motompro.gameengine2d.util.shape.Polygon;
-import com.motompro.gameengine2d.util.shape.Shape;
+import com.motompro.gameengine2d.math.shape.Circle;
+import com.motompro.gameengine2d.math.shape.Polygon;
+import com.motompro.gameengine2d.math.shape.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
