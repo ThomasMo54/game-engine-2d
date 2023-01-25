@@ -1,6 +1,7 @@
 package com.motompro.gameengine2d;
 
 import com.motompro.gameengine2d.manager.task.TaskManager;
+import com.motompro.gameengine2d.statemachine.StateMachine;
 
 /**
  * This class represents the main class of a game app. It handles the game loop and frame rate tricks.
@@ -12,6 +13,7 @@ public abstract class Game {
     private static final double DEFAULT_FRAME_RATE = 240;
 
     private final TaskManager taskManager = new TaskManager();
+    private final StateMachine stateMachine = new StateMachine();
     private boolean running = false;
     private double frameRateLimit = DEFAULT_FRAME_RATE;
     private double currentFrameRate = 0;
@@ -86,6 +88,10 @@ public abstract class Game {
      */
     public TaskManager getTaskManager() {
         return taskManager;
+    }
+
+    public StateMachine getStateMachine() {
+        return stateMachine;
     }
 
     /**
