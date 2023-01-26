@@ -24,11 +24,11 @@ public abstract class Game {
 
         while(running) {
             deltaTime = (System.nanoTime() - lastTick) / SECOND_IN_NANO;
+            lastTick = System.nanoTime();
             currentFrameRate = 1 / deltaTime;
             update(deltaTime);
             taskManager.update();
             render();
-            lastTick = System.nanoTime();
             try {
                 Thread.sleep((long) (((SECOND_IN_NANO / frameRateLimit) - deltaTime) / MILLISECOND_IN_NANO));
             } catch (InterruptedException e) {
