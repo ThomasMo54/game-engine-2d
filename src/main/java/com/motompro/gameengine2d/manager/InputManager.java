@@ -62,6 +62,7 @@ public class InputManager implements KeyListener, MouseListener, MouseMotionList
     @Override
     public void mouseDragged(MouseEvent e) {
         dragged = true;
+        mousePosition.set(e.getX(), e.getY());
     }
 
     @Override

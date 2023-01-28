@@ -1,6 +1,7 @@
-package com.motompro.gameengine2d.gameobject;
+package com.motompro.gameengine2d.display;
 
 import com.motompro.gameengine2d.exception.NotRemovableComponentException;
+import com.motompro.gameengine2d.gameobject.GameObject;
 import com.motompro.gameengine2d.gameobject.component.Component;
 import com.motompro.gameengine2d.gameobject.component.TransformComponent;
 import com.motompro.gameengine2d.math.Vector2;

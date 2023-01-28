@@ -8,10 +8,10 @@ import java.awt.geom.AffineTransform;
 
 public class Canvas {
 
-    private Graphics2D graphics;
-    private AffineTransform transform;
+    protected Graphics2D graphics;
+    protected AffineTransform transform;
 
-    public void setGraphics(Graphics2D graphics) {
+    protected void setGraphics(Graphics2D graphics) {
         this.graphics = graphics;
         this.transform = graphics.getTransform();
     }

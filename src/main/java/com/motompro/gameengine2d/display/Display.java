@@ -1,6 +1,5 @@
 package com.motompro.gameengine2d.display;
 
-import com.motompro.gameengine2d.gameobject.Camera;
 import com.motompro.gameengine2d.gameobject.component.TransformComponent;
 import com.motompro.gameengine2d.manager.InputManager;
 import com.motompro.gameengine2d.math.Vector2;
@@ -9,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
 import java.util.function.Consumer;
 
 public class Display {
@@ -53,11 +53,15 @@ public class Display {
         });
     }
 
-    public void render(Consumer<Canvas> consumer) {
-        panel.setGraphicsConsumer(consumer);
+    public void render(Consumer<Canvas> graphicsConsumer, Consumer<HUD> hudConsumer) {
+        panel.setConsumers(graphicsConsumer, hudConsumer);
         panel.repaint();
         if(frame.isVisible())
             frame.setVisible(true);
+    }
+
+    public void render(Consumer<Canvas> graphicsConsumer) {
+        render(graphicsConsumer, hud -> {});
     }
 
     public void close() {
@@ -172,29 +176,37 @@ class DisplayPanel extends JPanel {
 
     private final Display display;
     private final Canvas canvas = new Canvas();
+    private final HUD hud = new HUD();
     private Consumer<Canvas> graphicsConsumer = g -> {};
+    private Consumer<HUD> hudConsumer = hud -> {};
 
     protected DisplayPanel(Display display) {
         this.display = display;
     }
 
-    protected void setGraphicsConsumer(Consumer<Canvas> consumer) {
-        this.graphicsConsumer = consumer;
+    protected void setConsumers(Consumer<Canvas> graphicsConsumer, Consumer<HUD> hudConsumer) {
+        this.graphicsConsumer = graphicsConsumer;
+        this.hudConsumer = hudConsumer;
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D graphics2D = (Graphics2D) g;
-        TransformComponent cameraTransform = display.getCamera().getComponent(TransformComponent.class);
+        Camera camera = display.getCamera();
+        TransformComponent cameraTransform = camera.getComponent(TransformComponent.class);
         Vector2 cameraPosition = cameraTransform.getPosition();
-        Vector2 viewportSize = display.getCamera().getViewportSize();
+        Vector2 viewportSize = camera.getViewportSize();
         Vector2 scaleRatio = display.getCanvasSize().copy().divide(viewportSize);
         graphics2D.translate(-cameraPosition.getX() + viewportSize.getX() / 2 * scaleRatio.getX(), -cameraPosition.getY() + viewportSize.getY() / 2 * scaleRatio.getY());
         graphics2D.rotate(cameraTransform.getRotation());
         graphics2D.scale(scaleRatio.getX(), scaleRatio.getY());
         canvas.setGraphics(graphics2D);
         graphicsConsumer.accept(canvas);
+        graphics2D.setTransform(new AffineTransform());
+        graphics2D.scale(scaleRatio.getX(), scaleRatio.getY());
+        hud.setGraphics(graphics2D);
+        hudConsumer.accept(hud);
     }
 
     @Override
