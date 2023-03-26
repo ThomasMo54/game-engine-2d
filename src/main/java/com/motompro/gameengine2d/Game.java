@@ -1,7 +1,13 @@
 package com.motompro.gameengine2d;
 
+import com.motompro.gameengine2d.gameobject.GameObject;
+import com.motompro.gameengine2d.gameobject.Renderable;
+import com.motompro.gameengine2d.gameobject.Updatable;
 import com.motompro.gameengine2d.manager.task.TaskManager;
 import com.motompro.gameengine2d.statemachine.StateMachine;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class represents the main class of a game app. It handles the game loop and frame rate tricks.
@@ -18,6 +24,8 @@ public abstract class Game {
     private double frameRateLimit = DEFAULT_FRAME_RATE;
     private double currentFrameRate = 0;
 
+    private final Set<GameObject> gameObjects = new HashSet<>();
+
     private void doGameLoop() {
         long lastTick = System.nanoTime();
         double deltaTime;
@@ -26,6 +34,8 @@ public abstract class Game {
             deltaTime = (System.nanoTime() - lastTick) / SECOND_IN_NANO;
             lastTick = System.nanoTime();
             currentFrameRate = 1 / deltaTime;
+            double finalDeltaTime = deltaTime;
+            gameObjects.forEach(gameObject -> gameObject.update(finalDeltaTime));
             update(deltaTime);
             taskManager.update();
             render();
@@ -92,6 +102,18 @@ public abstract class Game {
 
     public StateMachine getStateMachine() {
         return stateMachine;
+    }
+
+    public Set<GameObject> getGameObjects() {
+        return gameObjects;
+    }
+
+    public void registerGameObject(GameObject gameObject) {
+        this.gameObjects.add(gameObject);
+    }
+
+    public void unregisterGameObject(GameObject gameObject) {
+        this.gameObjects.remove(gameObject);
     }
 
     /**

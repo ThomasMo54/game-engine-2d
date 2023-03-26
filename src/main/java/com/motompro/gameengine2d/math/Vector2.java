@@ -1,5 +1,7 @@
 package com.motompro.gameengine2d.math;
 
+import java.util.Objects;
+
 public class Vector2 {
 
     private static final double EPS = 0.00000001;
@@ -162,6 +164,11 @@ public class Vector2 {
             return false;
         return other.getX() >= x - EPS && other.getX() <= x + EPS &&
                 other.getY() >= y - EPS && other.getY() <= y + EPS;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     /**

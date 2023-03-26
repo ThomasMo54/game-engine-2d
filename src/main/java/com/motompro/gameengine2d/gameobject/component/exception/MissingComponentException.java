@@ -1,4 +1,4 @@
-package com.motompro.gameengine2d.exception;
+package com.motompro.gameengine2d.gameobject.component.exception;
 
 public class MissingComponentException extends RuntimeException {
 

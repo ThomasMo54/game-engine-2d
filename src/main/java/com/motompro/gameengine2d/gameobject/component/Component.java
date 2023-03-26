@@ -1,6 +1,6 @@
 package com.motompro.gameengine2d.gameobject.component;
 
-import com.motompro.gameengine2d.exception.MissingComponentException;
+import com.motompro.gameengine2d.gameobject.component.exception.MissingComponentException;
 import com.motompro.gameengine2d.gameobject.GameObject;
 
 import java.util.List;

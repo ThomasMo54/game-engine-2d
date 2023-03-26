@@ -1,12 +1,12 @@
 package com.motompro.gameengine2d.gameobject;
 
-import com.motompro.gameengine2d.exception.MissingComponentException;
-import com.motompro.gameengine2d.exception.UniqueComponentException;
+import com.motompro.gameengine2d.gameobject.component.exception.MissingComponentException;
+import com.motompro.gameengine2d.gameobject.component.exception.UniqueComponentException;
 import com.motompro.gameengine2d.gameobject.component.Component;
 
 import java.util.*;
 
-public class GameObject {
+public class GameObject implements Updatable {
 
     private final UUID id;
     private final List<Component> components = new ArrayList<>();
@@ -18,6 +18,13 @@ public class GameObject {
 
     public UUID getId() {
         return id;
+    }
+
+    @Override
+    public void update(double deltaTime) {
+        components.stream()
+                .filter(component -> component instanceof Updatable)
+                .forEach(component -> ((Updatable) component).update(deltaTime));
     }
 
     public <C extends Component> C getComponent(Class<C> componentClass) {
@@ -55,5 +62,10 @@ public class GameObject {
         if(!(obj instanceof GameObject other))
             return false;
         return id.equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
